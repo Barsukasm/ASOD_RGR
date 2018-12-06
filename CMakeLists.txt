@@ -3,4 +3,4 @@ project(ASOD_RGR)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(ASOD_RGR main.cpp SimpleGraph.h Vertex.h Edge.h)
+add_executable(ASOD_RGR main.cpp Graph.h Vertex.h Edge.h Form.h)
