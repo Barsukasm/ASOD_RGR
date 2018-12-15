@@ -13,6 +13,9 @@ public:
     virtual bool InsertE(int v1, int v2, Edge *t) = 0;
     virtual bool DeleteE(int v1, int v2) = 0;
     virtual Edge* getEdge(int v1, int v2) = 0;
+    //вспомогательные функции
+    virtual bool hasEdge(int v1, int v2) = 0;
+    virtual int deleteEdges(int index, bool directed) = 0; //удаляет инцидентные с вершиной ребра
 };
 
 
@@ -94,6 +97,37 @@ public:
         if (v1 == v2 || matrix[v1][v2] == NULL)//Петля
             throw 1;
         return matrix[v1][v2];
+    }
+
+    bool hasEdge(int v1,int v2){
+        int size = matrix.size();
+        if(v1 < 0 || v2 < 0 || v1 >= size || v2 >= size || v1 == v2) return false;
+        return !(matrix[v1][v2] == NULL);
+    }
+
+    //удалить инцидентные с вершиной ребра
+    int deleteEdges(int index, bool directed){
+        int size = matrix.size(); //Число вершин
+        int deleted = 0;
+        //Неверный номер вершины
+        if (index < 0 || index >= size) return 0;
+        //Удаляем связанные с вершиной рёбра
+        for (int i = 0; i < size; i++) {
+            if (matrix[i][index] != NULL) {
+                delete matrix[i][index];
+                matrix[i][index] = NULL;
+                ++deleted;
+                //Стираем симметричное ребро
+                if (!directed)
+                    matrix[index][i] = NULL;
+            }
+            if (matrix[index][i] != NULL) {
+                delete matrix[index][i];
+                matrix[index][i] = NULL;
+                ++deleted;
+            }
+        }
+        return deleted;
     }
 
 };
@@ -201,4 +235,40 @@ public:
         throw 1;
     }
 
+    bool hasEdge(int v1, int v2){
+        int size = adjList.size();
+        if (v1 < 0 || v2 < 0 || v1 >= size || v2 >= size || v1==v2) return false;
+        for (typename list<Node>::iterator j = adjList[v1].begin(); j != adjList[v1].end(); ++j){
+            if ((*j).v2 == v2)
+                return true;
+        }
+        return false;
+    }
+
+
+    //удалить инцидентные с вершиной ребра
+    int deleteEdges(int index, bool directed){
+        int size = adjList.size(); //Число вершин
+        int deleted = 0;
+        //Неверный номер вершины
+        if (index < 0 || index >= size)
+            return 0;
+        //Удаляем связанные с вершиной рёбра
+        for (int i = 0; i < size; ++i)
+            for (typename list<Node>::iterator j = adjList[i].begin(); j != adjList[i].end(); ++j)
+                if ((*j).v2 == index) {
+                    //Стираем симметричное ребро
+                    if (!directed)
+                        for (typename list<Node>::iterator k = adjList[index].begin(); k != adjList[index].end(); ++k)
+                            if ((*k).v2 == i) {
+                                adjList[index].erase(k);
+                                break;
+                            }
+                    delete (*j).edge;
+                    adjList[i].erase(j);
+                    ++deleted;
+                    break;
+                }
+        return deleted;
+    }
 };
