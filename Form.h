@@ -20,7 +20,6 @@ public:
 
 
 template <class Edge> class MatrixForm : public GraphForm<Edge>{
-    friend class EdgeIterator;
 private:
     bool directed; //флаг ориентированности
 

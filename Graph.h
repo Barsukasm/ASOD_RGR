@@ -49,7 +49,81 @@ public:
     void print();//печать графа
     int getIndex(Vertex *v);//определить индекс дескриптора в векторе вершин графа
 
+    //итератор вершин графа
+    class VertexIterator{
+    private:
+        Graph<Vertex, Edge> *graph; //привязанный граф
+        bool end; //признак нахождения итератора в пределаз графа
+        int cur; //текущее положение
+    public:
+        VertexIterator(Graph<Vertex, Edge> &g){graph = &g;}
 
+        bool begin(){
+            if(graph->vertexVector.size()==0){
+                end = true;
+                return false;
+            }
+            cur = 0;
+            end = false;
+            return true;
+        }
+
+        bool operator++(){
+            if(end) return false;
+            cur++;
+            if(cur == graph->vertexVector.size()-1) end = true;
+            return true;
+        }
+
+        bool toEnd(){
+            end = true;
+            cur = graph->vertexVector.size()-1;
+            if(cur<0) return false;
+            return true;
+        }
+
+        bool inGraph(){ return !end;} //Возвращает true - если в графе, false - в противном случае
+
+        Vertex* operator*(){
+            if(cur>=graph->vertexVector.size()||cur<0) throw "Out of range";
+            return graph->vertexVector[cur];
+        }
+    };
+
+    //Итератор ребер
+    class EdgeIterator{
+        Graph<Vertex, Edge> *graph; //привязанный граф
+    public:
+        int curV1, curV2;
+        bool end;
+
+        EdgeIterator(Graph<Vertex, Edge> &g){graph = &g;}
+
+        bool begin(){
+            if(graph->vertexVector.size()==0||graph->edgeCount==0){
+                end = true;
+                return false;
+            }
+
+            return true;
+        }
+
+        bool operator++(){
+
+        }
+
+        bool toEnd(){
+
+        }
+
+        bool inGraph(){ return !end;} //Возвращает true - если в графе, false - в противном случае
+
+        Vertex* operator*(){
+
+        }
+    };
+
+    //Итератор исходящих ребер
 };
 
 //конструкторы
