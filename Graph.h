@@ -1,3 +1,5 @@
+#ifndef GRAPH_H
+#define GRAPH_H
 #include <vector>
 #include <string>
 #include <time.h>
@@ -93,9 +95,9 @@ public:
     //Итератор ребер
     class EdgeIterator{
         Graph<Vertex, Edge> *graph; //привязанный граф
+        bool end;
     public:
         int curV1, curV2;
-        bool end;
 
         EdgeIterator(Graph<Vertex, Edge> &g){graph = &g;}
 
@@ -104,26 +106,135 @@ public:
                 end = true;
                 return false;
             }
-
-            return true;
+            //перебираем пары вершин пока не найдем ребро/не просмотрим все вершины
+            if(graph->directed()){
+                for(curV1=0;curV1<graph->vertexVector.size()-1;curV1++){
+                    for(curV2=0;curV2<graph->vertexVector.size()-1;curV2++){
+                        if(graph->data->hasEdge(curV1,curV2)) break;
+                    }
+                }
+            } else{
+                //оптимизация под неориентированный граф
+                for(curV1=0;curV1<graph->vertexVector.size()-2;curV1++){
+                    for(curV2=curV1+1;curV2<graph->vertexVector.size()-1;curV2++){
+                        if(graph->data->hasEdge(curV1,curV2)) break;
+                    }
+                }
+            }
+            return graph->data->hasEdge(curV1,curV2);
         }
 
         bool operator++(){
+            if(end) return false;
 
+            if(graph->directed()){
+                for(;curV1<graph->vertexVector.size()-1;curV1++){
+                    for(curV2+=1;curV2<graph->vertexVector.size()-1;curV2++){
+                        if(graph->data->hasEdge(curV1,curV2)) break;
+                    }
+                }
+            } else{
+                //оптимизация под неориентированный граф
+                for(;curV1<graph->vertexVector.size()-2;curV1++){
+                    for(curV2+=1;curV2<graph->vertexVector.size()-1;curV2++){
+                        if(graph->data->hasEdge(curV1,curV2)) break;
+                    }
+                }
+            }
+            if (graph->data->hasEdge(curV1,curV2)){
+                return true;
+            } else{
+                end = true;
+                return false;
+            };
         }
 
         bool toEnd(){
-
+            end = true;
+            if(graph->vertexVector.size()==0||graph->edgeCount==0){
+                return false;
+            }
+            if(graph->directed()){
+                for(curV1=graph->vertexVector.size()-1;curV1>=0;curV1--){
+                    for(curV2=graph->vertexVector.size()-1;curV2>=0;curV2--){
+                        if(graph->data->hasEdge(curV1,curV2)) break;
+                    }
+                }
+            } else{
+                //оптимизация под неориентированный граф
+                for(curV1=graph->vertexVector.size()-1;curV1>=0;curV1--){
+                    for(curV2=curV1-1;curV2>=0;curV2--){
+                        if(graph->data->hasEdge(curV1,curV2)) break;
+                    }
+                }
+            }
+            return graph->data->hasEdge(curV1,curV2);
         }
 
         bool inGraph(){ return !end;} //Возвращает true - если в графе, false - в противном случае
 
-        Vertex* operator*(){
-
+        Edge* operator*(){
+            if(graph->vertexVector.size()==0||graph->edgeCount==0) throw "Out of range";
+            return graph->data->getEdge(curV1,curV2);
         }
     };
 
     //Итератор исходящих ребер
+    class OuterEdgeIterator{
+        Graph<Vertex, Edge> *graph; //привязанный граф
+        bool end;
+    public:
+        int cur; //обрабатываемая вершина
+        int curV2; //вершина, в которую входит ребро
+
+        OuterEdgeIterator(Graph<Vertex, Edge> &g, Vertex &v){
+            graph=&g;
+            cur=graph->getIndex(&v);
+        }
+
+        OuterEdgeIterator(Graph<Vertex, Edge> &g, int index){
+            graph=&g;
+            cur=index;
+        }
+
+        bool begin(){
+            if(graph->vertexVector.size()==0||graph->edgeCount==0){
+                end = true;
+                return false;
+            }
+
+            for(curV2=0;curV2<graph->vertexVector.size()-1;curV2++){
+                if(graph->data->hasEdge(cur,curV2)) break;
+            }
+            return graph->data->hasEdge(cur,curV2);
+        }
+
+        bool operator++(){
+            if(end) return false;
+            for(curV2+=1;curV2<graph->vertexVector.size()-1;curV2++){
+                if(graph->data->hasEdge(cur,curV2)) break;
+            }
+            return graph->data->hasEdge(cur,curV2);
+        }
+
+        bool toEnd(){
+            end = true;
+            if(graph->vertexVector.size()==0||graph->edgeCount==0){
+                return false;
+            }
+            for(curV2=graph->vertexVector.size()-1;curV2>=0;curV2--){
+                if(graph->data->hasEdge(cur,curV2)) break;
+            }
+            return graph->data->hasEdge(cur,curV2);
+        }
+
+        bool inGraph(){ return !end;} //Возвращает true - если в графе, false - в противном случае
+
+        Edge* operator*(){
+            if(graph->vertexVector.size()==0||graph->edgeCount==0) throw "Out of range";
+            return graph->data->getEdge(cur,curV2);
+        }
+    };
 };
 
 //конструкторы
@@ -426,3 +537,5 @@ template<class Vertex,class Edge> int Graph<Vertex,Edge>::getIndex(Vertex *v) {
     if(index==vertexVector.size()) throw "vertex not found";
     return index;
 }
+
+#endif

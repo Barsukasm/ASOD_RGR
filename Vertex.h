@@ -1,3 +1,5 @@
+#ifndef VERTEX_H
+#define VERTEX_H
 template<class NameType, class Data> class Vertex{
 private:
      NameType name;//имя вершины
@@ -38,3 +40,5 @@ void Vertex<NameType,Data>::setData(Data d) {data=d;}
 
 template <class NameType,class Data>
 void Vertex<NameType,Data>::setName(NameType n) {name=n;}
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef FORM_H
+#define FORM_H
 #include <vector>
 #include <list>
 #include "Graph.h"
@@ -190,7 +192,7 @@ public:
         int size = adjList.size(); //Число вершин
         if (v1 < 0 || v2 < 0 || v1 >= size || v2 >= size)//Неверный номер вершины
             return false;
-        if (v1 == v2 || adjList(v1, v2))  //Петля или ребро уже есть
+        if (v1 == v2 || hasEdge(v1, v2))  //Петля или ребро уже есть
             return false;
         //Вставляем ребро
         Node node;
@@ -207,7 +209,7 @@ public:
         if (v1 < 0 || v2 < 0 || v1 >= size || v2 >= size)
             return false;
         //Ребра нет
-        if (v1 == v2 || adjList(v1, v2) == false)
+        if (v1 == v2 || hasEdge(v1, v2) == false)
             return false;
         //Удаляем ребро
         for (typename list<Node>::iterator j = adjList[v1].begin(); j != adjList[v1].end(); ++j)
@@ -271,3 +273,5 @@ public:
         return deleted;
     }
 };
+
+#endif

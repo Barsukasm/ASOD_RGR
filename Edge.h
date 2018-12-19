@@ -1,3 +1,5 @@
+#ifndef EDGE_H
+#define EDGE_H
 #include "Vertex.h"
 
 template <class Nametype, class Data, class Edge_Data> class Edge{
@@ -64,3 +66,5 @@ Vertex<Nametype,Data>*& Edge<Nametype,Data,Edge_Data>::V1() { return v1;}
 
 template <class Nametype, class Data, class Edge_Data>
 Vertex<Nametype,Data>*& Edge<Nametype,Data,Edge_Data>::V2() { return v2;}
+
+#endif
