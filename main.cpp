@@ -68,8 +68,8 @@ void draw_menu(){
     cout<<"45. Rewrite edge weight"<<endl;
     cout<<"46. Show edge ends"<<endl;
     cout<<endl;
-    cout<<"47. Task 1"<<endl; //in progress
-    cout<<"48. Task 2"<<endl; //in progress
+    cout<<"47. Task 1 (WIP)"<<endl; //in progress
+    cout<<"48. Task 2 (WIP)"<<endl; //in progress
     cout<<"0. Exit"<<endl;
 }
 
@@ -99,17 +99,18 @@ int main() {
             cout<<"Graph does not initialised"<<endl;
             continue;
         }
-        if(oIt==NULL&&choice>=38&&choice<=48){
+        if(oIt==NULL&&choice>38&&choice<=46){
             cout<<"Outer iterator does not initialised"<<endl;
             continue;
         }
         switch (choice){
+            //создание графа
             case 1:{
                 clearGraph(graph,vIt,eIt,oIt);
                 graph=new GraphSample();
                 vIt=new GraphSample::VertexIterator(*graph);
                 eIt=new GraphSample::EdgeIterator(*graph);
-                cout<<"Created"<<endl;
+                //cout<<"Created"<<endl;
                 break;
             }
             case 2:{
@@ -141,7 +142,7 @@ int main() {
                 graph=new GraphSample(v_num,directed,dense);
                 vIt=new GraphSample::VertexIterator(*graph);
                 eIt=new GraphSample::EdgeIterator(*graph);
-                cout<<"Created"<<endl;
+                //cout<<"Created"<<endl;
                 break;
             }
             case 3:{
@@ -175,10 +176,416 @@ int main() {
                 graph=new GraphSample(v_num,e_num,directed,dense);
                 vIt=new GraphSample::VertexIterator(*graph);
                 eIt=new GraphSample::EdgeIterator(*graph);
-                cout<<"Created"<<endl;
+                //cout<<"Created"<<endl;
                 break;
             }
 
+            //общие операции над графом
+            case 4:{
+                graph->print();
+                break;
+            }
+
+            case 5:{
+                cout<<graph->V()<<endl;
+                break;
+            }
+
+            case 6:{
+                cout<<graph->E()<<endl;
+                break;
+            }
+
+            case 7:{
+                cout<<graph->dense()<<endl;
+                break;
+            }
+
+            case 8:{
+                cout<<graph->directed()<<endl;
+                break;
+            }
+
+            case 9:{
+                cout<<graph->K()<<endl;
+                break;
+            }
+
+            case 10:{
+                cout<<graph->toListGraph()<<endl;
+                break;
+            }
+
+            case 11:{
+                cout<<graph->toMatrixGraph()<<endl;
+                break;
+            }
+
+            case 12:{
+                if(graph->insertV()) /*cout<<"done"<<endl*/;
+                else cout<<"error"<<endl;
+                break;
+            }
+
+            case 13:{
+                cout<<"Insert vertex name:"<<endl;
+                string name;
+                cin>>name;
+                cout<<graph->deleteV(graph->getVertex(name))<<endl;
+                break;
+            }
+
+            case 14:{
+                string v1, v2;
+                cout<<"Insert vertex from:"<<endl;
+                cin>>v1;
+                cout<<"Insert vertex to:"<<endl;
+                cin>>v2;
+                try {
+                    graph->insertE(graph->getVertex(v1), graph->getVertex(v2));
+                    //cout<<"done"<<endl;
+                }catch (...){
+                    cout<<"error"<<endl;
+                }
+                break;
+            }
+
+            case 15:{
+                string v1, v2;
+                cout<<"Insert vertex from:"<<endl;
+                cin>>v1;
+                cout<<"Insert vertex to:"<<endl;
+                cin>>v2;
+                try {
+                    graph->DeleteE(graph->getVertex(v1), graph->getVertex(v2));
+                    //cout<<"done"<<endl;
+                }catch (...){
+                    cout<<"error"<<endl;
+                }
+                break;
+            }
+
+            //работа с вершинами
+            case 16:{
+                cout<<"Insert vertex name:"<<endl;
+                string str;
+                cin>>str;
+                try {
+                    cout<<graph->getVertex(str)->getData()<<endl;
+                }catch (...){
+                    cout<<"Vertex not found"<<endl;
+                }
+                break;
+            }
+
+            case 17:{
+                string v;
+                int data;
+                cout<<"Insert vertex name:"<<endl;
+                cin>>v;
+                cout<<"Insert new data:"<<endl;
+                cin>>data;
+                try {
+                    graph->getVertex(v)->setData(data);
+                    //cout<<"done"<<endl;
+                }catch (...){
+                    cout<<"Vertex not found"<<endl;
+                }
+                break;
+            }
+
+            case 18:{
+                string v, name;
+                cout<<"Insert vertex name:"<<endl;
+                cin>>v;
+                cout<<"Insert new name:"<<endl;
+                cin>>name;
+                try {
+                    graph->getVertex(v)->setName(name);
+                    //cout<<"done"<<endl;
+                }catch (...){
+                    cout<<"Vertex not found"<<endl;
+                }
+                break;
+            }
+
+            //манипуляции с ребрами
+            case 19:{
+                string v1, v2;
+                cout<<"Insert vertex from:"<<endl;
+                cin>>v1;
+                cout<<"Insert vertex to:"<<endl;
+                cin>>v2;
+                try {
+                    cout<<graph->GetEdge(graph->getVertex(v1),graph->getVertex(v2))->getW()<<endl;
+                }catch (...){
+                    cout<<"Edge not found"<<endl;
+                }
+                break;
+            }
+
+            case 20:{
+                string v1, v2;
+                cout<<"Insert vertex from:"<<endl;
+                cin>>v1;
+                cout<<"Insert vertex to:"<<endl;
+                cin>>v2;
+                cout<<"Insert new weight:"<<endl;
+                int w;
+                cin>>w;
+                try {
+                    graph->GetEdge(graph->getVertex(v1),graph->getVertex(v2))->setW(w);
+                    //cout<<"done"<<endl;
+                }catch (...){
+                    cout<<"Edge not found"<<endl;
+                }
+                break;
+            }
+
+            case 21:{
+                string v1, v2;
+                cout<<"Insert vertex from:"<<endl;
+                cin>>v1;
+                cout<<"Insert vertex to:"<<endl;
+                cin>>v2;
+                try {
+                    cout<<graph->GetEdge(graph->getVertex(v1),graph->getVertex(v2))->getData()<<endl;
+                }catch (...){
+                    cout<<"Edge not found"<<endl;
+                }
+                break;
+            }
+
+            case 22:{
+                string v1, v2;
+                cout<<"Insert vertex from:"<<endl;
+                cin>>v1;
+                cout<<"Insert vertex to:"<<endl;
+                cin>>v2;
+                cout<<"Insert new data:"<<endl;
+                int data;
+                cin>>data;
+                try {
+                    graph->GetEdge(graph->getVertex(v1),graph->getVertex(v2))->setData(data);
+                    //cout<<"done"<<endl;
+                }catch (...){
+                    cout<<"Edge not found"<<endl;
+                }
+                break;
+            }
+
+            //итератор вершин
+            case 23:{
+                cout<<vIt->begin()<<endl;
+                break;
+            }
+
+            case 24:{
+                cout<<vIt->toEnd()<<endl;
+                break;
+            }
+
+            case 25:{
+                cout<<vIt->operator++()<<endl;
+                break;
+            }
+
+            case 26:{
+                try {
+                    cout<<vIt->operator*()->getData()<<endl;
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            case 27:{
+                int data;
+                cout<<"Insert new data:"<<endl;
+                cin>>data;
+                try {
+                    vIt->operator*()->setData(data);
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            case 28:{
+                try {
+                    cout<<vIt->operator*()->getName()<<endl;
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            case 29:{
+                string name;
+                cout<<"Insert new name:"<<endl;
+                cin>>name;
+                try {
+                    vIt->operator*()->setName(name);
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            //Итератор ребер
+            case 30:{
+                cout<<eIt->begin()<<endl;
+                break;
+            }
+
+            case 31:{
+                cout<<eIt->toEnd()<<endl;
+                break;
+            }
+
+            case 32:{
+                cout<<eIt->operator++()<<endl;
+                break;
+            }
+
+            case 33:{
+                try {
+                    cout<<eIt->operator*()->getData()<<endl;
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            case 34:{
+                int data;
+                cout<<"Insert new data:"<<endl;
+                cin>>data;
+                try {
+                    eIt->operator*()->setData(data);
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            case 35:{
+                try {
+                    cout<<eIt->operator*()->getW()<<endl;
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            case 36:{
+                int weight;
+                cout<<"Insert new weight:"<<endl;
+                cin>>weight;
+                try {
+                    eIt->operator*()->setW(weight);
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            case 37:{
+                try {
+                    cout<<eIt->operator*()->V1()->getName()<<" - "<<eIt->operator*()->V2()->getName()<<endl;
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            //Итератор исходящих вершин
+
+            case 38:{
+                string v1;
+                delete oIt;
+                oIt = NULL;
+                cout<<"Input name of vertex, whose outer edges you want to iterate:"<<endl;
+                cin>>v1;
+                oIt=new GraphSample::OuterEdgeIterator(*graph,*graph->getVertex(v1));
+                break;
+            }
+
+            case 39:{
+                cout<<oIt->begin()<<endl;
+                break;
+            }
+
+            case 40:{
+                cout<<oIt->toEnd()<<endl;
+                break;
+            }
+
+            case 41:{
+                cout<<oIt->operator++()<<endl;
+                break;
+            }
+
+            case 42:{
+                try {
+                    cout<<oIt->operator*()->getData()<<endl;
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            case 43:{
+                int data;
+                cout<<"Insert new data:"<<endl;
+                cin>>data;
+                try {
+                    oIt->operator*()->setData(data);
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            case 44:{
+                try {
+                    cout<<oIt->operator*()->getW()<<endl;
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            case 45:{
+                int weight;
+                cout<<"Insert new weight:"<<endl;
+                cin>>weight;
+                try {
+                    oIt->operator*()->setW(weight);
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            case 46:{
+                try {
+                    cout<<oIt->operator*()->V1()->getName()<<" - "<<oIt->operator*()->V2()->getName()<<endl;
+                }catch (...){
+                    cout<<"Out of range"<<endl;
+                }
+                break;
+            }
+
+            //Индивидуальные задания (в процессе)
+
+            case 47:{
+                break;
+            }
+
+            case 48:{
+                break;
+            }
 
             case 0:{
                 exit= true;

@@ -33,13 +33,13 @@ public:
     int E();//возвращает число ребер в графе
     bool directed();//возвращает тип графа, true - ориентированый, false - неориентированный
     bool dense();//возвращает представление графа, false - L-граф, true - M-граф
-    int K();//возвращает коэффициент насыщенности графа
+    double K();//возвращает коэффициент насыщенности графа
     bool toListGraph();//преобразует граф к L-графу, true - если успех, false - ошибка
     bool toMatrixGraph();//преобразует граф к M-графу, true - если успех, false - ошибка
     Vertex* insertV();//добавляет вершину к графу и возвращает адрес дескриптора вновь созданной вершины
     bool deleteV(Vertex *v);//удаляет вершину из графа, заданного адресом дескриптора v
     bool deleteV(int index);//удаление вершины по индексу
-    Edge insertE(Vertex *ver1,Vertex *ver2);/*добавляет
+    Edge* insertE(Vertex *ver1,Vertex *ver2);/*добавляет
  * ребро (v1, v2) к графу, соединяющую вершины, заданные адресами дескрипторов v1 и v2,
  * и возвращает адрес дескриптора вновь созданного ребра - e*/
     bool DeleteE (Vertex *v1, Vertex *v2);/*удаляет ребро, соединяющее вершины,
@@ -50,15 +50,20 @@ public:
  //Вспомогательные функции
     void print();//печать графа
     int getIndex(Vertex *v);//определить индекс дескриптора в векторе вершин графа
+    Vertex* getVertex(int index);//получить вершину по индексу
+    Vertex* getVertex(string name);//получить вершину по имени
 
     //итератор вершин графа
     class VertexIterator{
     private:
         Graph<Vertex, Edge> *graph; //привязанный граф
-        bool end; //признак нахождения итератора в пределаз графа
+        bool end; //признак нахождения итератора в пределах графа
         int cur; //текущее положение
     public:
-        VertexIterator(Graph<Vertex, Edge> &g){graph = &g;}
+        VertexIterator(Graph<Vertex, Edge> &g){
+            graph = &g;
+            end=true;
+        }
 
         bool begin(){
             if(graph->vertexVector.size()==0){
@@ -107,38 +112,63 @@ public:
                 return false;
             }
             //перебираем пары вершин пока не найдем ребро/не просмотрим все вершины
+            bool k = false;
             if(graph->directed()){
-                for(curV1=0;curV1<graph->vertexVector.size()-1;curV1++){
-                    for(curV2=0;curV2<graph->vertexVector.size()-1;curV2++){
-                        if(graph->data->hasEdge(curV1,curV2)) break;
+                for(curV1=0;curV1<graph->vertexVector.size();curV1++){
+                    for(curV2=0;curV2<graph->vertexVector.size();curV2++){
+                        if(graph->data->hasEdge(curV1,curV2)) {
+                            k=true;
+                            break;
+                        }
                     }
+                    if(k) break;
                 }
             } else{
                 //оптимизация под неориентированный граф
-                for(curV1=0;curV1<graph->vertexVector.size()-2;curV1++){
-                    for(curV2=curV1+1;curV2<graph->vertexVector.size()-1;curV2++){
-                        if(graph->data->hasEdge(curV1,curV2)) break;
+                for(curV1=0;curV1<graph->vertexVector.size()-1;curV1++){
+                    for(curV2=curV1+1;curV2<graph->vertexVector.size();curV2++){
+                        if(graph->data->hasEdge(curV1,curV2)) {
+                            k= true;
+                            break;
+                        }
                     }
+                    if(k) break;
                 }
             }
-            return graph->data->hasEdge(curV1,curV2);
+            if(graph->data->hasEdge(curV1,curV2)){
+                end= false;
+                return true;
+            }
+            end = true;
+            return false;
         }
 
         bool operator++(){
             if(end) return false;
 
+            bool k = false;
             if(graph->directed()){
-                for(;curV1<graph->vertexVector.size()-1;curV1++){
-                    for(curV2+=1;curV2<graph->vertexVector.size()-1;curV2++){
-                        if(graph->data->hasEdge(curV1,curV2)) break;
+                for(;curV1<graph->vertexVector.size();curV1++){
+                    for(curV2+=1;curV2<graph->vertexVector.size();curV2++){
+                        if(graph->data->hasEdge(curV1,curV2)) {
+                            k=true;
+                            break;
+                        }
                     }
+                    if(k) break;
+                    curV2=-1;
                 }
             } else{
                 //оптимизация под неориентированный граф
-                for(;curV1<graph->vertexVector.size()-2;curV1++){
-                    for(curV2+=1;curV2<graph->vertexVector.size()-1;curV2++){
-                        if(graph->data->hasEdge(curV1,curV2)) break;
+                for(;curV1<graph->vertexVector.size()-1;curV1++){
+                    for(curV2+=1;curV2<graph->vertexVector.size();curV2++){
+                        if(graph->data->hasEdge(curV1,curV2)) {
+                            k=true;
+                            break;
+                        }
                     }
+                    if(k) break;
+                    curV2=curV1+1;
                 }
             }
             if (graph->data->hasEdge(curV1,curV2)){
@@ -154,18 +184,27 @@ public:
             if(graph->vertexVector.size()==0||graph->edgeCount==0){
                 return false;
             }
+            bool k = false;
             if(graph->directed()){
                 for(curV1=graph->vertexVector.size()-1;curV1>=0;curV1--){
                     for(curV2=graph->vertexVector.size()-1;curV2>=0;curV2--){
-                        if(graph->data->hasEdge(curV1,curV2)) break;
+                        if(graph->data->hasEdge(curV1,curV2)) {
+                            k=true;
+                            break;
+                        }
                     }
+                    if(k) break;
                 }
             } else{
                 //оптимизация под неориентированный граф
                 for(curV1=graph->vertexVector.size()-1;curV1>=0;curV1--){
                     for(curV2=curV1-1;curV2>=0;curV2--){
-                        if(graph->data->hasEdge(curV1,curV2)) break;
+                        if(graph->data->hasEdge(curV1,curV2)) {
+                            k = true;
+                            break;
+                        }
                     }
+                    if(k) break;
                 }
             }
             return graph->data->hasEdge(curV1,curV2);
@@ -203,7 +242,7 @@ public:
                 return false;
             }
 
-            for(curV2=0;curV2<graph->vertexVector.size()-1;curV2++){
+            for(curV2=0;curV2<graph->vertexVector.size();curV2++){
                 if(graph->data->hasEdge(cur,curV2)) break;
             }
             return graph->data->hasEdge(cur,curV2);
@@ -211,7 +250,7 @@ public:
 
         bool operator++(){
             if(end) return false;
-            for(curV2+=1;curV2<graph->vertexVector.size()-1;curV2++){
+            for(curV2+=1;curV2<graph->vertexVector.size();curV2++){
                 if(graph->data->hasEdge(cur,curV2)) break;
             }
             return graph->data->hasEdge(cur,curV2);
@@ -358,8 +397,8 @@ template<class Vertex,class Edge> bool Graph<Vertex,Edge>::dense(){
     return !l_graph;
 }
 
-template<class Vertex, class Edge> int Graph<Vertex, Edge>::K(){
-    return 2*edgeCount/vertexVector.size();
+template<class Vertex, class Edge> double Graph<Vertex, Edge>::K(){
+    return (double)2*edgeCount/vertexVector.size();
 }
 
 //переход к L-графу
@@ -376,14 +415,14 @@ template<class Vertex,class Edge> bool Graph<Vertex,Edge>::toListGraph(){
     }
 
     //перенос ребер
-    for(int i=0; i<vertexVector.size();i++){
-        for(int j=0;j<vertexVector.size();j++){
-            if(data->hasEdge(i,j)) newData->InsertE(i,j,data->getEdge(i,j));
+    for(int i=0; i<vertexVector.size();i++) {
+        for (int j = 0; j < vertexVector.size(); j++) {
+            if (data->hasEdge(i, j)) newData->InsertE(i, j, data->getEdge(i, j));
         }
-        delete data;
-        data = newData;
-        l_graph= true;
     }
+    delete data;
+    data = newData;
+    l_graph= true;
     return true;
 }
 
@@ -396,20 +435,20 @@ template<class Vertex,class Edge> bool Graph<Vertex,Edge>::toMatrixGraph(){
     for(int i=0; i<vertexVector.size();i++){
         newData->InsertV(i);
     }
-    //переносим ребра
-    for(int i=0; i<vertexVector.size();i++){
-        for(int j=0;j<vertexVector.size();j++){
-            if(data->hasEdge(i,j)) newData->InsertE(i,j,data->getEdge(i,j));
+    for(int i=0; i<vertexVector.size();i++) {
+        for (int j = 0; j < vertexVector.size(); j++) {
+            if (data->hasEdge(i, j)) newData->InsertE(i, j, data->getEdge(i, j));
         }
-        delete data;
-        data = newData;
-        l_graph= false;
     }
+    delete data;
+    data = newData;
+    l_graph= false;
+    //переносим ребра
     return true;
 }
 //вставка вершины в граф
 template<class Vertex, class Edge> Vertex* Graph<Vertex, Edge>::insertV() {
-    Vertex *v = new Vertex;
+    Vertex *v = new Vertex();
     if(!data->InsertV(vertexVector.size())){
         throw 1;
     }
@@ -444,9 +483,9 @@ template<class Vertex,class Edge> bool Graph<Vertex,Edge>::deleteV(Vertex *v) {
 
 
 //добавить ребро
-template<class Vertex,class Edge> Edge Graph<Vertex,Edge>::insertE(Vertex *ver1, Vertex *ver2) {
+template<class Vertex,class Edge> Edge* Graph<Vertex,Edge>::insertE(Vertex *ver1, Vertex *ver2) {
     Edge *e = new Edge(ver1, ver2);
-    if(!data->InsertE(getIndex(ver1),getIndex(ver2),e)) throw "insert_exception";
+    if(!data->InsertE(getIndex(ver1),getIndex(ver2),e)) throw "insert exception";
 
     if(!oriented){
         data->InsertE(getIndex(ver2),getIndex(ver1),e);
@@ -503,8 +542,8 @@ template<class Vertex,class Edge> void Graph<Vertex,Edge>::print() {
             for (j=0; j<V(); j++)
                 if (data->hasEdge(i,j))
                 {
-                    e=getEdge(vertexVector[i],vertexVector[i]);
-                    cout<<setw(4)<<e->getWeight();
+                    e=data->getEdge(i,j);
+                    cout<<setw(4)<<e->getW();
                 }
                 else
                     cout << setw(4) << "-";
@@ -517,7 +556,7 @@ template<class Vertex,class Edge> void Graph<Vertex,Edge>::print() {
             v = vertexVector[i];
             cout << v->getName() << ": ";
             for (j=0; j < V(); j++){
-                v = vertexVector[i];
+                v = vertexVector[j];
                 if (data->hasEdge(i, j))
                     cout << v->getName() << "; ";
             }
@@ -536,6 +575,20 @@ template<class Vertex,class Edge> int Graph<Vertex,Edge>::getIndex(Vertex *v) {
     }
     if(index==vertexVector.size()) throw "vertex not found";
     return index;
+}
+
+template<class Vertex,class Edge> Vertex* Graph<Vertex,Edge>::getVertex(int index) {
+    if(index==vertexVector.size()) throw "vertex not found";
+    return vertexVector[index];
+}
+
+template<class Vertex,class Edge> Vertex* Graph<Vertex,Edge>::getVertex(string name) {
+    int index;
+    for (index=0; index<vertexVector.size();index++){
+        if(vertexVector[index]->getName()==name) break;
+    }
+    if(index==vertexVector.size()) throw "vertex not found";
+    return vertexVector[index];
 }
 
 #endif
