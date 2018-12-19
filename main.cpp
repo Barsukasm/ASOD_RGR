@@ -601,6 +601,6 @@ int main() {
             }
         }
     }
-
+    clearGraph(graph,vIt,eIt,oIt);
     return 0;
 }
