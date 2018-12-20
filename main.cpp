@@ -68,8 +68,9 @@ void draw_menu(){
     cout<<"45. Rewrite edge weight"<<endl;
     cout<<"46. Show edge ends"<<endl;
     cout<<endl;
-    cout<<"47. Task 1 (WIP)"<<endl; //in progress
-    cout<<"48. Task 2 (WIP)"<<endl; //in progress
+    cout<<"47. GetEdge()"<<endl;
+    cout<<"48. Task 1 (WIP)"<<endl; //in progress
+    cout<<"49. Task 2 (WIP)"<<endl; //in progress
     cout<<"0. Exit"<<endl;
 }
 
@@ -95,7 +96,7 @@ int main() {
     draw_menu();
     while (!exit){
         cin>>choice;
-        if(graph==NULL&&choice>3&&choice<=48){
+        if(graph==NULL&&choice>3&&choice<=49){
             cout<<"Graph does not initialised"<<endl;
             continue;
         }
@@ -577,9 +578,22 @@ int main() {
                 break;
             }
 
+
             //Индивидуальные задания (в процессе)
 
             case 47:{
+                string v1, v2;
+                cout<<"Insert vertex from:"<<endl;
+                cin>>v1;
+                cout<<"Insert vertex to:"<<endl;
+                cin>>v2;
+                try {
+                    if(graph->GetEdge(graph->getVertex(v1),graph->getVertex(v2))) cout<< true<<endl;
+                    else cout<< false<<endl;
+                    //cout<<"done"<<endl;
+                }catch (...){
+                    cout<<"Edge not found"<<endl;
+                }
                 break;
             }
 

@@ -18,6 +18,7 @@ public:
     //вспомогательные функции
     virtual bool hasEdge(int v1, int v2) = 0;
     virtual int deleteEdges(int index, bool directed) = 0; //удаляет инцидентные с вершиной ребра
+    virtual string giveAdjEdges(int v) = 0;
 };
 
 
@@ -131,6 +132,11 @@ public:
         return deleted;
     }
 
+    string giveAdjEdges(int v){
+        string ans;
+        return ans;
+    }
+
 };
 
 template <class Edge> class ListForm : public GraphForm<Edge>{
@@ -140,6 +146,7 @@ template <class Edge> class ListForm : public GraphForm<Edge>{
         int v2; //номер вершины
     };
     bool directed;
+
     vector<list<Node>> adjList;//списки смежности
 
 public:
@@ -244,6 +251,17 @@ public:
                 return true;
         }
         return false;
+    }
+
+    string giveAdjEdges(int v){
+        string ans;
+        if(v<0||v>=adjList.size()) throw "Wrong vertex";
+        for(typename list<Node>::iterator i = adjList[v].begin(); i != adjList[v].end(); ++i){
+            ans += to_string((*i).v2);
+
+            ans +="; ";
+        }
+        return ans;
     }
 
 

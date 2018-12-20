@@ -398,7 +398,11 @@ template<class Vertex,class Edge> bool Graph<Vertex,Edge>::dense(){
 }
 
 template<class Vertex, class Edge> double Graph<Vertex, Edge>::K(){
-    return (double)2*edgeCount/vertexVector.size();
+    if(!oriented){
+        return (double)edgeCount/((vertexVector.size()*(vertexVector.size()-1))/2);
+    } else{
+        return (double)edgeCount/(vertexVector.size()*(vertexVector.size()-1));
+    }
 }
 
 //переход к L-графу
@@ -555,11 +559,7 @@ template<class Vertex,class Edge> void Graph<Vertex,Edge>::print() {
         for (i=0; i<V(); i++){
             v = vertexVector[i];
             cout << v->getName() << ": ";
-            for (j=0; j < V(); j++){
-                v = vertexVector[j];
-                if (data->hasEdge(i, j))
-                    cout << v->getName() << "; ";
-            }
+            cout<<data->giveAdjEdges(i);
             cout << endl;
         }
     }
