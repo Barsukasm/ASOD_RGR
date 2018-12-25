@@ -241,10 +241,14 @@ public:
                 end = true;
                 return false;
             }
-
             for(curV2=0;curV2<graph->vertexVector.size();curV2++){
                 if(graph->data->hasEdge(cur,curV2)) break;
             }
+            if(curV2>graph->vertexVector.size()||curV2<0){
+                end = true;
+                return false;
+            }
+            end= false;
             return graph->data->hasEdge(cur,curV2);
         }
 
@@ -252,6 +256,10 @@ public:
             if(end) return false;
             for(curV2+=1;curV2<graph->vertexVector.size();curV2++){
                 if(graph->data->hasEdge(cur,curV2)) break;
+            }
+            if(curV2>graph->vertexVector.size()||curV2<0){
+                end = true;
+                return false;
             }
             return graph->data->hasEdge(cur,curV2);
         }

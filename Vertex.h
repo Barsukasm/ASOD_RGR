@@ -6,7 +6,6 @@ private:
      Data data;//данные, связанные с вершиной
 
 public:
-     int index;//индекс вершины в структуре графа или -1
 
      //интерфейсные методы
      Vertex();//Конструктор по умолчанию
@@ -18,15 +17,12 @@ public:
 };
 
 template <class NameType,class Data>
-Vertex<NameType,Data>::Vertex() {
-    index=-1;
-}
+Vertex<NameType,Data>::Vertex() {}
 
 template <class NameType,class Data>
 Vertex<NameType,Data>::Vertex(NameType n, Data d) {
     name=n;
     data=d;
-    index=-1;
 }
 
 template <class NameType,class Data>

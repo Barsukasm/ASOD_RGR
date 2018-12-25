@@ -1,5 +1,6 @@
 #include "Graph.h"
 #include <iostream>
+#include "Task1.h"
 
 typedef Vertex<string, int> VertexSample;
 typedef Edge<string, int, int> EdgeSample;
@@ -90,6 +91,7 @@ int main() {
     GraphSample::VertexIterator *vIt=NULL;
     GraphSample::EdgeIterator *eIt=NULL;
     GraphSample::OuterEdgeIterator *oIt=NULL;
+    Task1<GraphSample> *tsk=NULL;
 
     bool exit=false;
     int choice;
@@ -598,6 +600,15 @@ int main() {
             }
 
             case 48:{
+                tsk=new Task1<GraphSample>(*graph);
+                vector<VertexSample*> res=tsk->result();
+                if(tsk->restart()){
+                    for(int i=0;i<res.size();i++){
+                        cout<<res[i]->getName();
+                        if(i<res.size()-1) cout<<" -> ";
+                    }
+                } else cout<<false;
+                cout<<endl;
                 break;
             }
 
