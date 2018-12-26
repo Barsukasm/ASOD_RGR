@@ -70,7 +70,7 @@ void draw_menu(){
     cout<<"46. Show edge ends"<<endl;
     cout<<endl;
     cout<<"47. GetEdge()"<<endl;
-    cout<<"48. Task 1 (WIP)"<<endl; //in progress
+    cout<<"48. Task 1"<<endl;
     cout<<"49. Task 2 (WIP)"<<endl; //in progress
     cout<<"0. Exit"<<endl;
 }
@@ -581,7 +581,7 @@ int main() {
             }
 
 
-            //Индивидуальные задания (в процессе)
+
 
             case 47:{
                 string v1, v2;
@@ -598,6 +598,8 @@ int main() {
                 }
                 break;
             }
+
+                //Индивидуальные задания (в процессе)
 
             case 48:{
                 tsk=new Task1<GraphSample>(*graph);

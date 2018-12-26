@@ -67,6 +67,11 @@ public:
         return true;
     }
 
+    vector<VertexSample*> result(){
+        return res;
+    }
+
+private:
     bool dfs(int v){
         if(color[v]==1) return true;//Если вершина серая, то был обнаружен цикл. Завершаем обработку алгоритма.
         if(color[v]==2) return false;//Если вершина черная, то заканчиваем её обработку.
@@ -85,10 +90,6 @@ public:
         r.push(v);
         color[v]=2;
         return false;
-    }
-
-    vector<VertexSample*> result(){
-        return res;
     }
 };
 
